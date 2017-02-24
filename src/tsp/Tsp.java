@@ -51,29 +51,36 @@ public class Tsp {
 			ts[i]=r.nextDouble();
 		Arrays.sort(ts);
 		ArrayList<Double> res= new ArrayList<Double>();
+		for(int i=0;i<n;i++) res.add(0.0);
 		for(int i=0; i<n;i++)
-			res.add(ts[x.get(i)]);
+			res.set(x.get(i),ts[x.get(i)]);
 		return res;
 	}
 	
 	public ArrayList<Integer> decode(ArrayList<Double> tx){
-		ArrayList<Double> x=(ArrayList<Double>) tx.subList(0, n-1);
+		ArrayList<Double> x=new ArrayList<Double>( tx.subList(0, n));
 		ArrayList<Integer> lA= new ArrayList<Integer>();
 		Double ts[]= new Double[n];
-		for(int i=0;i<n;i++)
-			ts[i]=x.get(i);
-		Arrays.sort(ts);
 		for(int i=0;i<n;i++){
-			lA.add(x.indexOf(ts[i]));
+			ts[i]=x.get(i);
+		}
+		
+		Arrays.sort(ts);
+		for(int i=0;i<n;i++)lA.add(0);
+		for(int i=0;i<n;i++){
+			lA.set(x.indexOf(ts[i]),i);
 		}
 		return  lA;
 	}
 	//
 	public double getDistance(ArrayList<Integer> x){
+		System.out.println("Distance x is"+x);
 		double c=0;
 		for(int i=0;i<x.size()-1;i++){
 			c+=a[x.get(i)][x.get(i+1)];
 		}
+		
+		System.out.println("Distance is: "+c );
 		return c;
 	}
 	

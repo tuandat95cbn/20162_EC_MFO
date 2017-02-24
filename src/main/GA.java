@@ -8,8 +8,7 @@ public class GA {
 	
 	
 	GA(){
-		p.init();
-		
+		System.out.println(p.individuals);
 	}
 	ArrayList<Double> crossOver(ArrayList<Double> a, ArrayList<Double> b){
 		return null;

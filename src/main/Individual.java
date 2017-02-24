@@ -22,5 +22,9 @@ public class Individual {
 	public void setFitnessTask(ArrayList<Double> fitnessTask) {
 		this.fitnessTask = fitnessTask;
 	}
+	@Override
+	public String toString() {
+		return "Individual [gen=" + gen + ", fitnessTask=" + fitnessTask + "]";
+	}
 	
 }
