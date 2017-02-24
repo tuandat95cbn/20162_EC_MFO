@@ -41,16 +41,48 @@ public class Knapsack {
 		return kp;
 	}
 	//
-	double getValue(){
-		return 0;
+	public double getValue(ArrayList<Integer> x){
+		double res=0;
+		for(int i=0;i<x.size();i++)
+			res-=c[i]*x.get(i);
+		return res;
 	}
-	ArrayList<Integer> decode(ArrayList<Double> x){
+	public ArrayList<Integer> decode(ArrayList<Double> x){
 		ArrayList<Integer> kp= new ArrayList<Integer>();
 		for(int i=0;i<n;i++)
 			kp.add((int) Math.round(x.get(i)));
 		return kp;
 	}
 	
+	public Knapsack() {
+		super();
+		readData("kp.txt");
+	}
+	
+	public int getN() {
+		return n;
+	}
+	public void setN(int n) {
+		this.n = n;
+	}
+	public int getB() {
+		return b;
+	}
+	public void setB(int b) {
+		this.b = b;
+	}
+	public int[] getW() {
+		return w;
+	}
+	public void setW(int[] w) {
+		this.w = w;
+	}
+	public int[] getC() {
+		return c;
+	}
+	public void setC(int[] c) {
+		this.c = c;
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Knapsack kp= new Knapsack();

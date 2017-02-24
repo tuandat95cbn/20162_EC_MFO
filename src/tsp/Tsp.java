@@ -56,7 +56,8 @@ public class Tsp {
 		return res;
 	}
 	
-	ArrayList<Integer> decode(ArrayList<Double> x){
+	public ArrayList<Integer> decode(ArrayList<Double> tx){
+		ArrayList<Double> x=(ArrayList<Double>) tx.subList(0, n-1);
 		ArrayList<Integer> lA= new ArrayList<Integer>();
 		Double ts[]= new Double[n];
 		for(int i=0;i<n;i++)
@@ -68,9 +69,50 @@ public class Tsp {
 		return  lA;
 	}
 	//
-	double getDistance(){
-		return 0;
+	public double getDistance(ArrayList<Integer> x){
+		double c=0;
+		for(int i=0;i<x.size()-1;i++){
+			c+=a[x.get(i)][x.get(i+1)];
+		}
+		return c;
 	}
+	
+	public Tsp() {
+		super();
+		readData("tsp.txt");
+	}
+
+	
+	public int getN() {
+		return n;
+	}
+
+
+	public void setN(int n) {
+		this.n = n;
+	}
+
+
+	public int getM() {
+		return m;
+	}
+
+
+	public void setM(int m) {
+		this.m = m;
+	}
+
+
+	public int[][] getA() {
+		return a;
+	}
+
+
+	public void setA(int[][] a) {
+		this.a = a;
+	}
+
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Tsp tsp= new Tsp();
