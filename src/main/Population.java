@@ -12,11 +12,13 @@ public class Population {
 	int lenGen;
 	ArrayList<Individual> individuals= new ArrayList<Individual>();
 	ArrayList<ArrayList<Individual>> rankInTask= new ArrayList<ArrayList<Individual>>();
-	Tsp tsp= new Tsp();
-	Knapsack kp= new Knapsack();
-	public Population(int n, int nTask) {
+	Tsp tsp;
+	Knapsack kp; 
+	public Population(int n, int nTask,Tsp tsp,Knapsack kp) {
 		this.n = n;
 		this.nTask = nTask;
+		this.tsp=tsp;
+		this.kp=kp;
 		for(int i=0;i<nTask;i++){
 			ArrayList<Individual> aI= new ArrayList<Individual>();
 			rankInTask.add(aI);
@@ -37,7 +39,7 @@ public class Population {
 			System.out.println("g is: "+fitnessTa);
 			Individual ind= new Individual(g,fitnessTa);
 			individuals.add(ind);
-			
+			updateRank(ind);
 		}
 	}
 	void updateRank(Individual ind){
@@ -45,7 +47,7 @@ public class Population {
 			ArrayList<Individual> t= rankInTask.get(i);
 			boolean xd=true;
 			for(int j=0;j<t.size();j++)
-				if(t.get(j).getFitnessTask().get(i)<ind.getFitnessTask().get(i)){
+				if(t.get(j).getFitnessTask().get(i)>ind.getFitnessTask().get(i)){
 					t.add(j, ind);
 					xd=false;
 					break;
@@ -55,6 +57,11 @@ public class Population {
 			rankInTask.set(i, t);
 		}
 		
+	}
+	
+	void add(Individual ind){
+		updateRank(ind);
+		individuals.add(ind);
 	}
 	void init(){
 		
