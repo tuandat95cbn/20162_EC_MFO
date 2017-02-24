@@ -40,7 +40,10 @@ public class Knapsack {
 		}
 		return kp;
 	}
-	
+	//
+	double getValue(){
+		return 0;
+	}
 	ArrayList<Integer> decode(ArrayList<Double> x){
 		ArrayList<Integer> kp= new ArrayList<Integer>();
 		for(int i=0;i<n;i++)
