@@ -2,7 +2,9 @@ package knap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Knapsack {
@@ -29,16 +31,32 @@ public class Knapsack {
 			System.out.println(w[i]+" "+c[i]);
 	}
 	ArrayList<Double> encode(ArrayList<Integer> x){
-		return null;
+		Random r= new Random();
+		ArrayList<Double> kp= new ArrayList<Double>();
+		for(int i=0;i<n;i++){
+			if (x.get(i)==0)
+			kp.add(r.nextDouble()*5/10);
+			else kp.add(0.5+r.nextDouble()*5/10);
+		}
+		return kp;
 	}
 	
 	ArrayList<Integer> decode(ArrayList<Double> x){
-		return null;
+		ArrayList<Integer> kp= new ArrayList<Integer>();
+		for(int i=0;i<n;i++)
+			kp.add((int) Math.round(x.get(i)));
+		return kp;
 	}
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Knapsack kp= new Knapsack();
 		kp.readData("kp.txt");
+		ArrayList<Integer> ts= new ArrayList<Integer>();
+		for(int i=0;i<kp.n;i++){
+			ts.add(1);
+		}
+		System.out.println(kp.encode(ts));
+		System.out.println(kp.decode(kp.encode(ts)));
 	}
 }
