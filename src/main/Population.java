@@ -66,6 +66,34 @@ public class Population {
 	void init(){
 		
 	}
+	
+	int getArgminOfRank(Individual ind){
+		int minRank=n+1;
+		int vtmin=-1;
+		for(int i=0;i<rankInTask.size();i++){
+			ArrayList<Individual> t= rankInTask.get(i);
+			int it=t.indexOf(ind);
+			if(minRank>it){
+				minRank=it;
+				vtmin=i;
+			}
+		}
+		return vtmin; 
+	}
+	
+	double getScalarFitness(Individual ind){
+		int minRank=n+1;
+		int vtmin=-1;
+		for(int i=0;i<rankInTask.size();i++){
+			ArrayList<Individual> t= rankInTask.get(i);
+			int it=t.indexOf(ind);
+			if(minRank>it){
+				minRank=it;
+				vtmin=i;
+			}
+		}
+		return 1.0/minRank; 
+	}
 	void selection(){
 		
 	}

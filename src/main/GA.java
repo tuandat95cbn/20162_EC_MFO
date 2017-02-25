@@ -16,11 +16,27 @@ public class GA {
 	
 	GA(){
 		System.out.println(p.rankInTask);
+		
+	
 	}
 	void process(int inter,int nN){
 		Random r= new Random();
+		
 		for(int i=0;i<inter;i++){
+			ArrayList<Individual> individuals = p.individuals;
 			for(int j=0;j<nN;j++){
+				Individual a=individuals.get(r.nextInt(individuals.size()));
+				Individual b=individuals.get(r.nextInt(individuals.size()));
+				while(a==b) b=individuals.get(r.nextInt(individuals.size()));
+				int ta=p.getArgminOfRank(a);
+				int tb=p.getArgminOfRank(b);
+				double t= r.nextDouble();
+				if((ta==tb) || (t>0.0001)){
+					crossOver(a.getGen(), b.getGen());
+				} else {
+					mutation(a.getGen());
+					mutation(b.getGen());
+				}
 				//here
 			}
 		}
