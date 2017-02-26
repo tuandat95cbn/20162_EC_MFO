@@ -103,4 +103,10 @@ public class Population {
 		}
 		return 1.0/(minRank+1); 
 	}
+
+	int rankOfIndividualinTask(Individual ind, int i){
+		ArrayList<Individual> t= rankInTask.get(i);
+		int it=t.indexOf(ind);
+		return it;
+	}
 }

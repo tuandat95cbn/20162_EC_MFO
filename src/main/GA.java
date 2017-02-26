@@ -29,8 +29,8 @@ public class GA {
 				Individual a=individuals.get(r.nextInt(individuals.size()));
 				Individual b=individuals.get(r.nextInt(individuals.size()));
 				while(a==b) b=individuals.get(r.nextInt(individuals.size()));
-				int ta=p.getArgminOfRank(a);
-				int tb=p.getArgminOfRank(b);
+				int ta=a.getSkillFactor();
+				int tb=b.getSkillFactor();
 				double t= r.nextDouble();
 				if((ta==tb) || (t>0.0001)){
 					crossOver(a, b);
