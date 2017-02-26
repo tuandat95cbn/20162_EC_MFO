@@ -44,9 +44,9 @@ public class Knapsack {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(n+" "+b);
-		for(int i=0;i<n;i++)
-			System.out.println(w[i]+" "+c[i]);
+		//System.out.println(n+" "+b);
+		//for(int i=0;i<n;i++)
+			//System.out.println(w[i]+" "+c[i]);
 	}
 	
 	ArrayList<Double> encode(ArrayList<Integer> x){
@@ -63,7 +63,7 @@ public class Knapsack {
 	public double getValue(ArrayList<Integer> x){
 		double res=0;
 		for(int i=0;i<x.size();i++)
-			res-=c[i]*x.get(i);
+			res+=c[i]*x.get(i);
 		return res;
 	}
 	

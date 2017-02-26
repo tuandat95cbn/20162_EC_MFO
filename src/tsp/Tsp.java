@@ -35,11 +35,11 @@ public class Tsp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		for(int i=0;i<n;i++){
-			for(int j=0;j<n;j++)
-				System.out.print(a[i][j]+"    ");
-			System.out.println();
-		}
+//		for(int i=0;i<n;i++){
+//			for(int j=0;j<n;j++)
+//				//System.out.print(a[i][j]+"    ");
+//			//System.out.println();
+//		}
 			
 	}
 	
@@ -74,13 +74,13 @@ public class Tsp {
 	}
 	//
 	public double getDistance(ArrayList<Integer> x){
-		System.out.println("Distance x is"+x);
+		//System.out.println("Distance x is"+x);
 		double c=0;
 		for(int i=0;i<x.size()-1;i++){
 			c+=a[x.get(i)][x.get(i+1)];
 		}
 		
-		System.out.println("Distance is: "+c );
+		//System.out.println("Distance is: "+c );
 		return c;
 	}
 	
@@ -128,7 +128,7 @@ public class Tsp {
 		for(int i=0;i<tsp.n;i++){
 			l.add(tsp.n-i-1);
 		}
-		System.out.println(tsp.encode(l));
-		System.out.println(tsp.decode(tsp.encode(l)));
+		//System.out.println(tsp.encode(l));
+		//System.out.println(tsp.decode(tsp.encode(l)));
 	}
 }

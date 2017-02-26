@@ -2,6 +2,9 @@ package main;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 import knap.Knapsack;
@@ -15,9 +18,7 @@ public class GA {
 	
 	
 	GA(){
-		System.out.println(p.rankInTask);
-		
-	
+		//System.out.println("rank in task:"+p.rankInTask);
 	}
 	void process(int inter,int nN){
 		Random r= new Random();
@@ -32,27 +33,27 @@ public class GA {
 				int tb=p.getArgminOfRank(b);
 				double t= r.nextDouble();
 				if((ta==tb) || (t>0.0001)){
-					crossOver(a.getGen(), b.getGen());
+					crossOver(a, b);
 				} else {
 					mutation(a.getGen());
 					mutation(b.getGen());
 				}
-				//here
+				selection();
 			}
 		}
 	}
-	void crossOver(ArrayList<Double> a, ArrayList<Double> b){
+	void crossOver(Individual a, Individual b){
 		Random r= new Random();
-		int t=r.nextInt(a.size()-1);
+		int t=r.nextInt(a.getGen().size()-1);
 		ArrayList<Double> cb= new ArrayList<Double>();
 		ArrayList<Double> ca= new ArrayList<Double>();
 		for(int i=0;i<t;i++){
-			ca.add(a.get(i));
-			cb.add(b.get(i));
+			ca.add(a.getGen().get(i));
+			cb.add(b.getGen().get(i));
 		}
-		for(int i=t;i<a.size();i++){
-			ca.add(b.get(i));
-			cb.add(a.get(i));
+		for(int i=t;i<a.getGen().size();i++){
+			ca.add(b.getGen().get(i));
+			cb.add(a.getGen().get(i));
 		}
 		
 		ArrayList<Integer> kpd=kp.decode(ca);
@@ -60,8 +61,19 @@ public class GA {
 		ArrayList<Double> fitnessTa= new ArrayList<Double>();
 		fitnessTa.add(tsp.getDistance(tsp.decode(ca)));
 		fitnessTa.add(kp.getValue(kp.decode(ca)));
+		
 		Individual ind= new Individual(ca, fitnessTa);
+//		double rand = Math.random();
+//		
+//		//Compute scalar fitness (Alg3)
+//		if(rand<0.5){
+//			int skill_factor_ca = a.getSkillFactor();
+//			ind.setSkillFactor(skill_factor_ca);
+//			//ind.setScalarFitness(fitnessTa.get(skill_factor_ca));
+//		}
 		p.add(ind);
+		
+		
 		kpd=kp.decode(cb);
 		if(kp.getWeight(kpd)>kp.getB()) kp.makeIndivialVail(cb);
 		fitnessTa= new ArrayList<Double>();
@@ -84,5 +96,24 @@ public class GA {
 		fitnessTa.add(kp.getValue(kp.decode(c)));
 		Individual ind= new Individual(c, fitnessTa);
 		p.add(ind);
+	}
+	
+	void selection(){
+		p.updatePopulation();
+		Collections.sort(p.individuals, new Comparator<Individual>() {
+			
+			@Override
+			public int compare(Individual i1, Individual i2){
+				Double di1 = new Double(i1.getScalarFitness());
+				Double di2 = new Double(i2.getScalarFitness());
+				return di1.compareTo(di2);
+			}
+		});
+		
+		ArrayList<Individual> new_individuals = new ArrayList<Individual>();
+		for(int i=0; i<p.n; i++){
+			new_individuals.add(p.individuals.get(i));
+		}
+		p.individuals = new_individuals;
 	}
 }

@@ -36,12 +36,24 @@ public class Population {
 			ArrayList<Double> fitnessTa= new ArrayList<Double>();
 			fitnessTa.add(tsp.getDistance(tsp.decode(g)));
 			fitnessTa.add(kp.getValue(kp.decode(g)));
-			System.out.println("g is: "+fitnessTa);
+			//System.out.println("g is: "+fitnessTa);
 			Individual ind= new Individual(g,fitnessTa);
+			//ind.setSkillFactor(getArgminOfRank(ind));
 			individuals.add(ind);
 			updateRank(ind);
 		}
+		updatePopulation();
 	}
+	
+	void updatePopulation(){
+		for(int i=0; i<individuals.size(); i++){
+			Individual ind = individuals.get(i);
+			ind.setSkillFactor(getArgminOfRank(ind));
+			ind.setScalarFitness(getScalarFitness(ind));
+			//System.out.println("individual "+i+":: "+ind.toString());
+		}
+	}
+	
 	void updateRank(Individual ind){
 		for(int i=0;i<rankInTask.size();i++){
 			ArrayList<Individual> t= rankInTask.get(i);
@@ -62,9 +74,6 @@ public class Population {
 	void add(Individual ind){
 		updateRank(ind);
 		individuals.add(ind);
-	}
-	void init(){
-		
 	}
 	
 	int getArgminOfRank(Individual ind){
@@ -92,9 +101,6 @@ public class Population {
 				vtmin=i;
 			}
 		}
-		return 1.0/minRank; 
-	}
-	void selection(){
-		
+		return 1.0/(minRank+1); 
 	}
 }
