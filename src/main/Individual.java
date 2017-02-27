@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Individual {
 	ArrayList<Double> gen;
 	ArrayList<Double> fitnessTask;
+	ArrayList<Integer> factorial_rank;
 	int skillFactor;
 	double scalarFitness;
 	
@@ -37,10 +38,17 @@ public class Individual {
 	public void setScalarFitness(double scalarFitness) {
 		this.scalarFitness = scalarFitness;
 	}
+	public ArrayList<Integer> getFactorial_rank() {
+		return factorial_rank;
+	}
+	public void setFactorial_rank(ArrayList<Integer> factorial_rank) {
+		this.factorial_rank = factorial_rank;
+	}
 	@Override
 	public String toString() {
 		return "Individual [gen=" + gen + ", fitnessTask=" + fitnessTask
-				+ ", skillFactor=" + skillFactor + ", scalarFitness="
-				+ scalarFitness + "]";
+				+ ", factorial_rank=" + factorial_rank + ", skillFactor="
+				+ skillFactor + ", scalarFitness=" + scalarFitness + "]";
 	}
+	
 }
