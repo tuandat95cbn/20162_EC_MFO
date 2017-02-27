@@ -99,7 +99,7 @@ public class GA {
 	}
 	
 	void selection(){
-		p.updatePopulation();
+		//p.updatePopulation();
 		Collections.sort(p.individuals, new Comparator<Individual>() {
 			
 			@Override

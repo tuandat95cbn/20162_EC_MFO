@@ -42,10 +42,6 @@ public class Population {
 			individuals.add(ind);
 			updateRank(ind);
 		}
-		updatePopulation();
-	}
-	
-	void updatePopulation(){
 		for(int i=0; i<individuals.size(); i++){
 			Individual ind = individuals.get(i);
 			ind.setSkillFactor(getArgminOfRank(ind));
@@ -53,6 +49,15 @@ public class Population {
 			//System.out.println("individual "+i+":: "+ind.toString());
 		}
 	}
+	
+//	void updatePopulation(){
+//		for(int i=0; i<individuals.size(); i++){
+//			Individual ind = individuals.get(i);
+//			ind.setSkillFactor(getArgminOfRank(ind));
+//			ind.setScalarFitness(getScalarFitness(ind));
+//			//System.out.println("individual "+i+":: "+ind.toString());
+//		}
+//	}
 	
 	void updateRank(Individual ind){
 		for(int i=0;i<rankInTask.size();i++){
@@ -73,6 +78,8 @@ public class Population {
 	
 	void add(Individual ind){
 		updateRank(ind);
+		ind.setSkillFactor(getArgminOfRank(ind));
+		ind.setScalarFitness(getScalarFitness(ind));
 		individuals.add(ind);
 	}
 	
