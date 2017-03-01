@@ -9,10 +9,11 @@ import java.util.Random;
 
 import knap.Knapsack;
 import tsp.Tsp;
+import tsp.Tsp2D;
 
 public class GA {
 	int nTask=2;
-	Tsp tsp= new Tsp();
+	Tsp2D tsp= new Tsp2D();
 	Knapsack kp= new Knapsack();
 	Population p= new Population(10,nTask,tsp,kp);
 	public static final double LIMIT =10000000000.0;
@@ -34,7 +35,7 @@ public class GA {
 				Individual ind=p.getIndividualBestOfTask(ii);
 				if(bestSolution.get(ii).fitnessTask.get(ii)>ind.getFitnessTask().get(ii)) 
 					bestSolution.set(ii, ind);
-				System.out.println("The best of task "+ii+" : "+ind);
+				System.out.println("The best of task "+ii+" : "+ind.getFitnessTask());
 			}
 			ArrayList<Individual> individuals = p.individuals;
 			ArrayList<Individual> childrens = new ArrayList<Individual>();;
@@ -47,7 +48,7 @@ public class GA {
 				double t= r.nextDouble();
 				
 				
-				if((ta==tb) || (t>0.0001)){
+				if((ta==tb) || (t>0.1)){
 					childrens.addAll(crossOver(a, b));
 				} else {
 					Individual ia = mutation(a);
@@ -130,7 +131,7 @@ public class GA {
 			indb.setSkillFactor(b.getSkillFactor());
 		}
 		fitnessTa= new ArrayList<Double>();
-		if(inda.getSkillFactor()==0) {
+		if(indb.getSkillFactor()==0) {
 			fitnessTa.add(tsp.getDistance(tsp.decode(cb)));
 			fitnessTa.add(LIMIT);
 		} else {
@@ -145,17 +146,27 @@ public class GA {
 	
 	Individual mutation(Individual a){
 		Random r= new Random();
-		int t= r.nextInt();
+		ArrayList<Integer> fR= new ArrayList<Integer>();
+		for(int i=0;i<nTask;i++) fR.add(p.individuals.size()+1);
+		int t= r.nextInt(a.getGen().size());
 		ArrayList<Double> c= new ArrayList<Double>();
 		for(int i=0;i<a.getGen().size();i++) c.add(a.getGen().get(i));
 		c.set(t, r.nextDouble());
 		ArrayList<Integer> kpd=kp.decode(c);
 		if(kp.getWeight(kpd)>kp.getB()) kp.makeIndivialVail(c);
-		ArrayList<Double> fitnessTa= new ArrayList<Double>();
-		fitnessTa.add(tsp.getDistance(tsp.decode(c)));
-		fitnessTa.add(kp.getValue(kp.decode(c)));
-		Individual ind= new Individual(c, fitnessTa);
+		Individual ind= new Individual(c, null);
 		ind.setSkillFactor(a.getSkillFactor());
+		ArrayList<Double> fitnessTa= new ArrayList<Double>();
+		if(ind.getSkillFactor()==0) {
+			fitnessTa.add(tsp.getDistance(tsp.decode(c)));
+			fitnessTa.add(LIMIT);
+		} else {
+			fitnessTa.add(LIMIT);
+			fitnessTa.add(kp.getValue(kp.decode(c)));
+		}
+		ind.setFitnessTask(fitnessTa);
+		ind.setFactorial_rank(fR);
+		
 		return ind;
 	}
 	

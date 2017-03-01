@@ -96,7 +96,7 @@ public class Knapsack {
 	
 	public Knapsack() {
 		super();
-		readData("kp.txt");
+		readData("kp15.txt");
 		sort(cw, n, vtcw);
 	}
 	

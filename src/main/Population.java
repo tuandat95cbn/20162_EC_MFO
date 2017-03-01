@@ -5,6 +5,7 @@ import java.util.Random;
 
 import knap.Knapsack;
 import tsp.Tsp;
+import tsp.Tsp2D;
 
 public class Population {
 	int nIndividual; //number of individual
@@ -12,9 +13,9 @@ public class Population {
 	int lenGen; //length of gen per individual
 	ArrayList<Individual> individuals= new ArrayList<Individual>();
 	//ArrayList<ArrayList<Double>> bestFitnessInTask = new ArrayList<ArrayList<Double>>();
-	Tsp tsp;
+	Tsp2D tsp;
 	Knapsack kp; 
-	public Population(int n, int nTask,Tsp tsp,Knapsack kp) {
+	public Population(int n, int nTask,Tsp2D tsp,Knapsack kp) {
 		this.nIndividual = n;
 		this.nTask = nTask;
 		this.tsp=tsp;
@@ -89,7 +90,7 @@ public class Population {
 			ind.setSkillFactor(task_rank_min);
 			ind.setScalarFitness(1.0/(min_rank));
 		}
-		System.out.println("Rank in Task:"+ rankInTask);
+		
 	}
 	
 
