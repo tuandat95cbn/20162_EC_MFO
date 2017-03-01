@@ -19,6 +19,7 @@ public class GA {
 	
 	GA(){
 		//System.out.println("rank in task:"+p.rankInTask);
+		process(2, 3);
 	}
 	void process(int inter,int nN){
 		Random r= new Random();
@@ -38,8 +39,10 @@ public class GA {
 					mutation(a.getGen());
 					mutation(b.getGen());
 				}
-				selection();
+				
 			}
+			selection();
+			System.out.println(p.rankInTask);
 		}
 	}
 	void crossOver(Individual a, Individual b){

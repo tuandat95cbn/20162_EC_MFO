@@ -44,7 +44,7 @@ public class Tsp {
 	}
 	
 	
-	ArrayList<Double> encode(ArrayList<Integer> x){
+	/*ArrayList<Double> encode(ArrayList<Integer> x){
 		Random r = new Random();
 		Double ts[]=new Double[n];
 		for(int i=0;i<n;i++)
@@ -55,9 +55,20 @@ public class Tsp {
 		for(int i=0; i<n;i++)
 			res.set(x.get(i),ts[x.get(i)]);
 		return res;
+	}*/
+	ArrayList<Double> encode(ArrayList<Integer> x){
+		Random r = new Random();
+		Double ts[]=new Double[n];
+		for(int i=0;i<n;i++)
+			ts[i]=r.nextDouble();
+		Arrays.sort(ts);
+		ArrayList<Double> res= new ArrayList<Double>();
+		for(int i=0;i<n;i++) res.add(0.0);
+		for(int i=0; i<n;i++)
+			res.set(x.get(i),ts[i]);
+		return res;
 	}
-	
-	public ArrayList<Integer> decode(ArrayList<Double> tx){
+	/*public ArrayList<Integer> decode(ArrayList<Double> tx){
 		ArrayList<Double> x=new ArrayList<Double>( tx.subList(0, n));
 		ArrayList<Integer> lA= new ArrayList<Integer>();
 		Double ts[]= new Double[n];
@@ -69,6 +80,21 @@ public class Tsp {
 		for(int i=0;i<n;i++)lA.add(0);
 		for(int i=0;i<n;i++){
 			lA.set(x.indexOf(ts[i]),i);
+		}
+		return  lA;
+	}*/
+	public ArrayList<Integer> decode(ArrayList<Double> tx){
+		ArrayList<Double> x=new ArrayList<Double>( tx.subList(0, n));
+		ArrayList<Integer> lA= new ArrayList<Integer>();
+		Double ts[]= new Double[n];
+		for(int i=0;i<n;i++){
+			ts[i]=x.get(i);
+		}
+		
+		Arrays.sort(ts);
+		for(int i=0;i<n;i++)lA.add(0);
+		for(int i=0;i<n;i++){
+			lA.add(x.indexOf(ts[i]));
 		}
 		return  lA;
 	}
