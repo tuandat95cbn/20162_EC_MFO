@@ -40,11 +40,14 @@ public class Population {
 			fitnessTa.add(kp.getValue(kp.decode(g)));
 			Individual ind= new Individual(g,fitnessTa);
 			individuals.add(ind);
-			//updateRank(ind);
+			
 		}
-
+		updateRankPopulation();
 		
-		//compute rank, skillfactor, scalar fitness
+	}
+	
+	
+	public void updateRankPopulation(){
 		ArrayList<ArrayList<Individual>> rankInTask = new ArrayList<ArrayList<Individual>>();
 		for(int i=0; i<nTask; i++){
 			ArrayList<Individual> lstIndividualInTask = new ArrayList<Individual>();
@@ -68,6 +71,7 @@ public class Population {
 				rankInTask.set(i, lstIndividualInTask);
 			}
 		}
+		
 		for(int i=0; i<nIndividual; i++){
 			Individual ind = individuals.get(i);
 			ArrayList<Integer> factorial_rank = new ArrayList<Integer>();
@@ -83,14 +87,18 @@ public class Population {
 			}
 			ind.setFactorial_rank(factorial_rank);
 			ind.setSkillFactor(task_rank_min);
-			ind.setScalarFitness(1.0/min_rank);
+			ind.setScalarFitness(1.0/(min_rank));
 		}
-		
+		System.out.println("Rank in Task:"+ rankInTask);
 	}
 	
 
 	//problem: two child in the same task
 	void add(ArrayList<Individual> offsprings){
+		for(int i=0;i< offsprings.size();i++){
+			individuals.add(offsprings.get(i));
+		}
+		
 		for(int in=0; in<offsprings.size(); in++){
 			Individual child = offsprings.get(in);
 			int child_task = child.getSkillFactor();
@@ -103,14 +111,28 @@ public class Population {
 					break;
 				}
 			}
-			child.setScalarFitness(1/index);
+			//child.setScalarFitness(1/index);
+			if(index >-1)
 			for(int j=index; j<rankInTask.size(); j++){
 				Individual tmp = rankInTask.get(j);
 				ArrayList<Integer> rank = tmp.getFactorial_rank();
 				rank.set(child_task, rank.get(child_task)+1);
 				tmp.setFactorial_rank(rank);
+			} else{
+				index=rankInTask.size();
 			}
+			ArrayList<Integer> facRankInd=new ArrayList<Integer>();
+			for(int ii=0;ii<nTask;ii++)
+				facRankInd.add(individuals.size()+1);
+			facRankInd.set(child_task, index+1);
+			child.setFactorial_rank(facRankInd);
+			offsprings.set(in, child);
 		}	
+		
+		for(int i=0;i< offsprings.size();i++){
+			Individual ind= offsprings.get(i);
+			ind.setScalarFitness(1/(ind.getMinFactorialRank()));
+		}
 	}
 	
 	public ArrayList<Individual> countRank(int task){
@@ -121,7 +143,8 @@ public class Population {
 			//for(int i=0; i<nTask; i++){
 				boolean check = true;
 				for(int j=0; j<lstIndividualInTask.size(); j++){
-					if(lstIndividualInTask.get(j).getFitnessTask().get(task) > ind.getFitnessTask().get(task)){
+					if(lstIndividualInTask.get(j).getFitnessTask().get(task) 
+							> ind.getFitnessTask().get(task)){
 						lstIndividualInTask.add(j,ind);
 						check = false;
 						break;
@@ -134,5 +157,12 @@ public class Population {
 		}
 		
 		return lstIndividualInTask;
+	}
+	
+	public Individual getIndividualBestOfTask(int task){
+		Individual best= null;
+		for(int i=0;i<individuals.size();i++)
+			if(individuals.get(i).factorial_rank.get(task)==1) best=individuals.get(i); 
+		return best;
 	}
 }

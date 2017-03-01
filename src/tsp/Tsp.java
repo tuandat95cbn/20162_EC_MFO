@@ -92,7 +92,6 @@ public class Tsp {
 		}
 		
 		Arrays.sort(ts);
-		for(int i=0;i<n;i++)lA.add(0);
 		for(int i=0;i<n;i++){
 			lA.add(x.indexOf(ts[i]));
 		}

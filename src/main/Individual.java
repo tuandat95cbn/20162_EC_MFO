@@ -14,6 +14,15 @@ public class Individual {
 		this.gen = gen;
 		this.fitnessTask=fitnessTask;
 	}
+	
+	public Integer getMinFactorialRank(){
+		Integer min=10000000;
+		for(int i=0;i<factorial_rank.size();i++){
+			Integer tmp=factorial_rank.get(i);
+			if(min> tmp) min=tmp;
+		}
+		return min;
+	}
 	public ArrayList<Double> getGen() {
 		return gen;
 	}

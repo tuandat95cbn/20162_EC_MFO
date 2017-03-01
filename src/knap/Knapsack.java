@@ -63,7 +63,7 @@ public class Knapsack {
 	public double getValue(ArrayList<Integer> x){
 		double res=0;
 		for(int i=0;i<x.size();i++)
-			res+=c[i]*x.get(i);
+			res-=c[i]*x.get(i);
 		return res;
 	}
 	
