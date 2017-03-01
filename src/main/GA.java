@@ -23,7 +23,7 @@ public class GA {
 	}
 	void process(int inter,int nN){
 		Random r= new Random();
-		
+		p.init();
 		for(int i=0;i<inter;i++){
 			ArrayList<Individual> individuals = p.individuals;
 			for(int j=0;j<nN;j++){
@@ -33,20 +33,30 @@ public class GA {
 				int ta=a.getSkillFactor();
 				int tb=b.getSkillFactor();
 				double t= r.nextDouble();
-				if((ta==tb) || (t>0.0001)){
-					crossOver(a, b);
-				} else {
-					mutation(a.getGen());
-					mutation(b.getGen());
-				}
 				
+				ArrayList<Individual> childrens = new ArrayList<Individual>();;
+				
+				if((ta==tb) || (t>0.0001)){
+					childrens = crossOver(a, b);
+				} else {
+					Individual ia = mutation(a);
+					Individual ib = mutation(b);
+					childrens.add(ia);
+					childrens.add(ib);
+				}
+
+				p.add(childrens);
+				selection();
 			}
-			selection();
-			System.out.println(p.rankInTask);
 		}
 	}
-	void crossOver(Individual a, Individual b){
+	
+	ArrayList<Individual> crossOver(Individual a, Individual b){
+		ArrayList<Individual> childrens = new ArrayList<Individual>();
+		
 		Random r= new Random();
+		
+		//generate gen for childrens
 		int t=r.nextInt(a.getGen().size()-1);
 		ArrayList<Double> cb= new ArrayList<Double>();
 		ArrayList<Double> ca= new ArrayList<Double>();
@@ -59,38 +69,44 @@ public class GA {
 			cb.add(a.getGen().get(i));
 		}
 		
+		//make attribute for childrens
 		ArrayList<Integer> kpd=kp.decode(ca);
 		if(kp.getWeight(kpd)>kp.getB()) kp.makeIndivialVail(ca);
 		ArrayList<Double> fitnessTa= new ArrayList<Double>();
 		fitnessTa.add(tsp.getDistance(tsp.decode(ca)));
 		fitnessTa.add(kp.getValue(kp.decode(ca)));
+		Individual inda= new Individual(ca, fitnessTa);
 		
-		Individual ind= new Individual(ca, fitnessTa);
-//		double rand = Math.random();
-//		
-//		//Compute scalar fitness (Alg3)
-//		if(rand<0.5){
-//			int skill_factor_ca = a.getSkillFactor();
-//			ind.setSkillFactor(skill_factor_ca);
-//			//ind.setScalarFitness(fitnessTa.get(skill_factor_ca));
-//		}
-		p.add(ind);
-		
+		double rand = Math.random();
+		if(rand < 0.5){
+			inda.setSkillFactor(a.getSkillFactor());
+		}else{
+			inda.setSkillFactor(b.getSkillFactor());
+		}
+		childrens.add(inda);
 		
 		kpd=kp.decode(cb);
 		if(kp.getWeight(kpd)>kp.getB()) kp.makeIndivialVail(cb);
 		fitnessTa= new ArrayList<Double>();
 		fitnessTa.add(tsp.getDistance(tsp.decode(cb)));
 		fitnessTa.add(kp.getValue(kp.decode(cb)));
-		ind= new Individual(cb, fitnessTa);
-		p.add(ind);
+		Individual indb= new Individual(cb, fitnessTa);
+		
+		rand = Math.random();
+		if(rand < 0.5){
+			indb.setSkillFactor(a.getSkillFactor());
+		}else{
+			indb.setSkillFactor(b.getSkillFactor());
+		}
+		childrens.add(indb);
+		return childrens;
 	}
 	
-	void mutation(ArrayList<Double> a){
+	Individual mutation(Individual a){
 		Random r= new Random();
 		int t= r.nextInt();
 		ArrayList<Double> c= new ArrayList<Double>();
-		for(int i=0;i<a.size();i++) c.add(a.get(i));
+		for(int i=0;i<a.getGen().size();i++) c.add(a.getGen().get(i));
 		c.set(t, r.nextDouble());
 		ArrayList<Integer> kpd=kp.decode(c);
 		if(kp.getWeight(kpd)>kp.getB()) kp.makeIndivialVail(c);
@@ -98,7 +114,9 @@ public class GA {
 		fitnessTa.add(tsp.getDistance(tsp.decode(c)));
 		fitnessTa.add(kp.getValue(kp.decode(c)));
 		Individual ind= new Individual(c, fitnessTa);
-		p.add(ind);
+		ind.setSkillFactor(a.getSkillFactor());
+		
+		return ind;
 	}
 	
 	void selection(){
@@ -114,7 +132,7 @@ public class GA {
 		});
 		
 		ArrayList<Individual> new_individuals = new ArrayList<Individual>();
-		for(int i=0; i<p.n; i++){
+		for(int i=0; i<p.nIndividual; i++){
 			new_individuals.add(p.individuals.get(i));
 		}
 		p.individuals = new_individuals;

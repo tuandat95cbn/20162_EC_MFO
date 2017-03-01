@@ -7,26 +7,28 @@ import knap.Knapsack;
 import tsp.Tsp;
 
 public class Population {
-	int n;
-	int nTask;
-	int lenGen;
+	int nIndividual; //number of individual
+	int nTask; //number of task
+	int lenGen; //length of gen per individual
 	ArrayList<Individual> individuals= new ArrayList<Individual>();
-	ArrayList<ArrayList<Individual>> rankInTask= new ArrayList<ArrayList<Individual>>();
+	//ArrayList<ArrayList<Double>> bestFitnessInTask = new ArrayList<ArrayList<Double>>();
 	Tsp tsp;
 	Knapsack kp; 
 	public Population(int n, int nTask,Tsp tsp,Knapsack kp) {
-		this.n = n;
+		this.nIndividual = n;
 		this.nTask = nTask;
 		this.tsp=tsp;
 		this.kp=kp;
-		for(int i=0;i<nTask;i++){
-			ArrayList<Individual> aI= new ArrayList<Individual>();
-			rankInTask.add(aI);
-		}
 		if(tsp.getN()>kp.getN()) lenGen=tsp.getN();
 		else lenGen=kp.getN();
+	}
+	
+	//Step 1-2 in algo
+	void init(){
 		Random r= new Random();
-		for(int i=0;i<n;i++){
+		
+		//init random individuals
+		for(int i=0;i<nIndividual;i++){
 			ArrayList<Double> g= new ArrayList<Double>();
 			for(int j=0;j<lenGen;j++){
 				g.add(r.nextDouble());
@@ -36,84 +38,101 @@ public class Population {
 			ArrayList<Double> fitnessTa= new ArrayList<Double>();
 			fitnessTa.add(tsp.getDistance(tsp.decode(g)));
 			fitnessTa.add(kp.getValue(kp.decode(g)));
-			//System.out.println("g is: "+fitnessTa);
 			Individual ind= new Individual(g,fitnessTa);
-			//ind.setSkillFactor(getArgminOfRank(ind));
 			individuals.add(ind);
-			updateRank(ind);
+			//updateRank(ind);
 		}
-		for(int i=0; i<individuals.size(); i++){
-			Individual ind = individuals.get(i);
-			ind.setSkillFactor(getArgminOfRank(ind));
-			ind.setScalarFitness(getScalarFitness(ind));
-			//System.out.println("individual "+i+":: "+ind.toString());
+
+		
+		//compute rank, skillfactor, scalar fitness
+		ArrayList<ArrayList<Individual>> rankInTask = new ArrayList<ArrayList<Individual>>();
+		for(int i=0; i<nTask; i++){
+			ArrayList<Individual> lstIndividualInTask = new ArrayList<Individual>();
+			rankInTask.add(lstIndividualInTask);
 		}
-	}
-	
-//	void updatePopulation(){
-//		for(int i=0; i<individuals.size(); i++){
-//			Individual ind = individuals.get(i);
-//			ind.setSkillFactor(getArgminOfRank(ind));
-//			ind.setScalarFitness(getScalarFitness(ind));
-//			//System.out.println("individual "+i+":: "+ind.toString());
-//		}
-//	}
-	
-	void updateRank(Individual ind){
-		for(int i=0;i<rankInTask.size();i++){
-			ArrayList<Individual> t= rankInTask.get(i);
-			boolean xd=true;
-			for(int j=0;j<t.size();j++)
-				if(t.get(j).getFitnessTask().get(i)>ind.getFitnessTask().get(i)){
-					t.add(j, ind);
-					xd=false;
-					break;
-					
+		for(int i_in=0; i_in < nIndividual; i_in++){
+			Individual ind = individuals.get(i_in);
+			for(int i=0; i<nTask; i++){
+				ArrayList<Individual> lstIndividualInTask = rankInTask.get(i);
+				boolean check = true;
+				for(int j=0; j<lstIndividualInTask.size(); j++){
+					if(lstIndividualInTask.get(j).getFitnessTask().get(i) > ind.getFitnessTask().get(i)){
+						lstIndividualInTask.add(j,ind);
+						check = false;
+						break;
+					}
 				}
-			if(xd==true) t.add( ind);
-			rankInTask.set(i, t);
+				if(check==true){
+					lstIndividualInTask.add(ind);
+				}
+				rankInTask.set(i, lstIndividualInTask);
+			}
+		}
+		for(int i=0; i<nIndividual; i++){
+			Individual ind = individuals.get(i);
+			ArrayList<Integer> factorial_rank = new ArrayList<Integer>();
+			int min_rank = nIndividual+2;
+			int task_rank_min = -1;
+			for(int j=0; j<nTask; j++){
+				int rankj = rankInTask.get(j).indexOf(ind)+1;
+				factorial_rank.add(rankj);
+				if(rankj < min_rank){
+					min_rank = rankj;
+					task_rank_min = j;
+				}
+			}
+			ind.setFactorial_rank(factorial_rank);
+			ind.setSkillFactor(task_rank_min);
+			ind.setScalarFitness(1.0/min_rank);
 		}
 		
 	}
 	
-	void add(Individual ind){
-		updateRank(ind);
-		ind.setSkillFactor(getArgminOfRank(ind));
-		ind.setScalarFitness(getScalarFitness(ind));
-		individuals.add(ind);
-	}
-	
-	int getArgminOfRank(Individual ind){
-		int minRank=n+1;
-		int vtmin=-1;
-		for(int i=0;i<rankInTask.size();i++){
-			ArrayList<Individual> t= rankInTask.get(i);
-			int it=t.indexOf(ind);
-			if(minRank>it){
-				minRank=it;
-				vtmin=i;
-			}
-		}
-		return vtmin; 
-	}
-	
-	double getScalarFitness(Individual ind){
-		int minRank=n+1;
-		int vtmin=-1;
-		for(int i=0;i<rankInTask.size();i++){
-			ArrayList<Individual> t= rankInTask.get(i);
-			int it=t.indexOf(ind);
-			if(minRank>it){
-				minRank=it;
-				vtmin=i;
-			}
-		}
-		return 1.0/(minRank+1); 
-	}
 
-	int rankOfIndividualinTask(Individual ind, int i){
-		ArrayList<Individual> t= rankInTask.get(i);
-		int it=t.indexOf(ind);
-		return it;
+	//problem: two child in the same task
+	void add(ArrayList<Individual> offsprings){
+		for(int in=0; in<offsprings.size(); in++){
+			Individual child = offsprings.get(in);
+			int child_task = child.getSkillFactor();
+			
+			ArrayList<Individual> rankInTask = countRank(child_task);
+			int index=-1;
+			for(int j=0; j<rankInTask.size(); j++){
+				if(rankInTask.get(j).getFitnessTask().get(child_task) > child.getFitnessTask().get(child_task)){
+					index = j; 
+					break;
+				}
+			}
+			child.setScalarFitness(1/index);
+			for(int j=index; j<rankInTask.size(); j++){
+				Individual tmp = rankInTask.get(j);
+				ArrayList<Integer> rank = tmp.getFactorial_rank();
+				rank.set(child_task, rank.get(child_task)+1);
+				tmp.setFactorial_rank(rank);
+			}
+		}	
+	}
+	
+	public ArrayList<Individual> countRank(int task){
+		ArrayList<Individual> lstIndividualInTask = new ArrayList<Individual>();
+		
+		for(int i_in=0; i_in < individuals.size(); i_in++){
+			Individual ind = individuals.get(i_in);
+			//for(int i=0; i<nTask; i++){
+				boolean check = true;
+				for(int j=0; j<lstIndividualInTask.size(); j++){
+					if(lstIndividualInTask.get(j).getFitnessTask().get(task) > ind.getFitnessTask().get(task)){
+						lstIndividualInTask.add(j,ind);
+						check = false;
+						break;
+					}
+				}
+				if(check==true){
+					lstIndividualInTask.add(ind);
+				}
+			//}
+		}
+		
+		return lstIndividualInTask;
 	}
 }
