@@ -86,12 +86,51 @@ public class Population {
 		}
 		
 	}
-		
-	void add(Individual ind){
-		individuals.add(ind);
+	
+	//problem: two child in the same task
+	void add(ArrayList<Individual> offsprings){
+		for(int in=0; in<offsprings.size(); in++){
+			Individual child = offsprings.get(in);
+			int child_task = child.getSkillFactor();
+			
+			ArrayList<Individual> rankInTask = countRank(child_task);
+			int index=-1;
+			for(int j=0; j<rankInTask.size(); j++){
+				if(rankInTask.get(j).getFitnessTask().get(child_task) > child.getFitnessTask().get(child_task)){
+					index = j; 
+					break;
+				}
+			}
+			child.setScalarFitness(1/index);
+			for(int j=index; j<rankInTask.size(); j++){
+				Individual tmp = rankInTask.get(j);
+				ArrayList<Integer> rank = tmp.getFactorial_rank();
+				rank.set(child_task, rank.get(child_task)+1);
+				tmp.setFactorial_rank(rank);
+			}
+		}	
 	}
 	
-	void updateRankInTask(int task){
+	public ArrayList<Individual> countRank(int task){
+		ArrayList<Individual> lstIndividualInTask = new ArrayList<Individual>();
 		
+		for(int i_in=0; i_in < individuals.size(); i_in++){
+			Individual ind = individuals.get(i_in);
+			//for(int i=0; i<nTask; i++){
+				boolean check = true;
+				for(int j=0; j<lstIndividualInTask.size(); j++){
+					if(lstIndividualInTask.get(j).getFitnessTask().get(task) > ind.getFitnessTask().get(task)){
+						lstIndividualInTask.add(j,ind);
+						check = false;
+						break;
+					}
+				}
+				if(check==true){
+					lstIndividualInTask.add(ind);
+				}
+			//}
+		}
+		
+		return lstIndividualInTask;
 	}
 }
