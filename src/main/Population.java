@@ -11,7 +11,7 @@ public class Population {
 	int nIndividual; //number of individual
 	int nTask; //number of task
 	int lenGen; //length of gen per individual
-	ArrayList<Individual> individuals= new ArrayList<Individual>();
+	ArrayList<Individual> individuals= null;
 	//ArrayList<ArrayList<Double>> bestFitnessInTask = new ArrayList<ArrayList<Double>>();
 	Tsp2D tsp;
 	Knapsack kp; 
@@ -27,7 +27,7 @@ public class Population {
 	//Step 1-2 in algo
 	void init(){
 		Random r= new Random();
-		
+		individuals= new ArrayList<Individual>();
 		//init random individuals
 		for(int i=0;i<nIndividual;i++){
 			ArrayList<Double> g= new ArrayList<Double>();

@@ -28,14 +28,24 @@ public class GA {
 		p.init();
 		for(int i=0;i<nTask;i++)
 			bestSolution.add(p.individuals.get(i));
+		int changebest=0;
 		for(int i=0;i<inter;i++){
 			System.out.println("it "+i);
 			
 			for(int ii=0;ii<nTask;ii++){
 				Individual ind=p.getIndividualBestOfTask(ii);
-				if(bestSolution.get(ii).fitnessTask.get(ii)>ind.getFitnessTask().get(ii)) 
+				if(bestSolution.get(ii).fitnessTask.get(ii)>ind.getFitnessTask().get(ii)) {
+					changebest=0;
 					bestSolution.set(ii, ind);
+				}
 				System.out.println("The best of task "+ii+" : "+ind.getFitnessTask());
+			}
+			System.out.println("Best gobal: "+bestSolution.get(0).getFitnessTask()+" "+bestSolution.get(1).getFitnessTask());
+			changebest++;
+			if(changebest>=50){
+				p.init();
+				changebest=0;
+				System.out.println("Change best:  ");
 			}
 			ArrayList<Individual> individuals = p.individuals;
 			ArrayList<Individual> childrens = new ArrayList<Individual>();;
