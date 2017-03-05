@@ -78,7 +78,36 @@ public class Tsp2D {
 		return  lA;
 	}*/
 	public ArrayList<Integer> decode(ArrayList<Double> tx){
-		ArrayList<Double> x=new ArrayList<Double>( tx.subList(0, n));
+		ArrayList<Double> x=new ArrayList<Double>();
+		ArrayList<Double> tmp_tx = new ArrayList<Double>();
+		for(int i=0; i<tx.size(); i++){
+			tmp_tx.add(tx.get(i));
+		}
+		if(tmp_tx.size()>n){
+			double window[] = {Math.random(),Math.random()};
+			int stride;
+			if((tmp_tx.size()- window.length)%(n-1)==0){
+				stride = (tmp_tx.size()- window.length)/(n-1);
+			}else{
+				stride = (tmp_tx.size()- window.length)/(n-1) +1;
+				int zerro_padding = (n-1)*stride + window.length - tx.size();
+				for(int i=0; i<zerro_padding; i++){
+					tmp_tx.add(0.0);
+				}
+			}
+			for(int i=0; i<tmp_tx.size(); i+=stride){
+				double tmp_x =0;
+				for(int j=0; j<window.length; j++){
+					tmp_x += tmp_tx.get(i+j)*window[j];
+				}
+				x.add(tmp_x);
+			}
+			//System.out.println("TSP::decode--length of gen > point of TSP");
+		}else{
+			x = tmp_tx;
+		}
+		//System.out.print("TSP::decode--length of gen"+x.size());
+		
 		ArrayList<Integer> lA= new ArrayList<Integer>();
 		Double ts[]= new Double[n];
 		for(int i=0;i<n;i++){
@@ -89,6 +118,9 @@ public class Tsp2D {
 		for(int i=0;i<n;i++){
 			lA.add(x.indexOf(ts[i]));
 		}
+		
+		//System.out.println(name()+"decode--gen length = "+lA.size());
+		
 		return  lA;
 	}
 	public double distance2Point(double x1,double y1, double x2, double y2){
@@ -144,11 +176,14 @@ public class Tsp2D {
 		this.y = y;
 	}
 
-
+	public String name(){
+		return "Tsp2D::";
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Tsp2D tsp2D= new Tsp2D();
-		tsp2D.readData("tsp52.txt");
+		tsp2D.readData("tsp.txt");
 		Scanner fileIn;
 		ArrayList<Integer> a= new ArrayList<Integer>();
 		try {

@@ -29,6 +29,7 @@ public class Population {
 		Random r= new Random();
 		individuals= new ArrayList<Individual>();
 		//init random individuals
+		System.out.println("Population::init--length of gen = "+lenGen);
 		for(int i=0;i<nIndividual;i++){
 			ArrayList<Double> g= new ArrayList<Double>();
 			for(int j=0;j<lenGen;j++){
@@ -165,5 +166,9 @@ public class Population {
 		for(int i=0;i<individuals.size();i++)
 			if(individuals.get(i).factorial_rank.get(task)==1) best=individuals.get(i); 
 		return best;
+	}
+	
+	public String name(){
+		return "Population::";
 	}
 }
