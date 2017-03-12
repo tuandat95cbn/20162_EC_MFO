@@ -12,6 +12,18 @@ public class Knapsack {
 	int w[],c[];
 	double cw[];
 	int vtcw[];
+	double window[] = {Math.random(),Math.random()};
+	//System.out.println("Knapsack::decode"+"stride window=["+window[0]+", "+window[1]+"]");
+	int stride;
+	double window_max(){
+		double max = -1;
+		for(int i=0; i<window.length; i++){
+			if(window[i]>max){
+				max = window[i];
+			}
+		}
+		return max;
+	}
 	void sort(double a[],int na,int vt[]){
 		for(int i=0;i<na;i++) vt[i]=i;
 		for(int i=0;i<na-1;i++)
@@ -75,22 +87,67 @@ public class Knapsack {
 	}
 	
 	public ArrayList<Double> makeIndivialVail(ArrayList<Double> x){
-		double wx=getWeight(decode(x));
+//		System.out.println(name()+"makeIndivialVail--x.size="+x.size());
+//		System.out.println(name()+"makeIndivialVail--x="+x.toString());
+		ArrayList<Integer> x_decode = decode(x);
+		double wx=getWeight(x_decode);
+//		System.out.println(name()+"makeIndivialVail--wx="+wx+"  b="+b);
 		int i=0;
 		Random r= new Random();
 		while(wx>b){
-			if(Math.round( x.get(vtcw[i]))==1){
+//			System.out.println(name()+"makeIndivialVail--vtcw["+i+"]="+vtcw[i] + "  wx="+wx);
+			if(x_decode.get(vtcw[i])==1){
 				wx=wx-w[vtcw[i]];
+				for(int k = 0; k<window.length; k++){
+					x.set(vtcw[i]+k, 0.5/(window.length*window_max()));
+				}
 			}
-			x.set(vtcw[i], r.nextDouble()*5/10);
 			i++;
 		}
 		return x;
 	}
 	public ArrayList<Integer> decode(ArrayList<Double> x){
+		//copy x to process in function
+		ArrayList<Double> tmp_x = new ArrayList<Double>();
+		for(int i=0; i<x.size(); i++){
+			tmp_x.add(x.get(i));
+		}
+		
 		ArrayList<Integer> kp= new ArrayList<Integer>();
-		for(int i=0;i<n;i++)
-			kp.add((int) Math.round(x.get(i)));
+		if(tmp_x.size()>n){
+			if((tmp_x.size()- window.length)%(n-1)==0){
+				stride = (tmp_x.size()- window.length)/(n-1);
+			}else{
+				stride = (tmp_x.size()- window.length)/(n-1) +1;
+				int zerro_padding = (n-1)*stride + window.length - x.size();
+				//System.out.println(name()+"decode--zerro_padding = "+zerro_padding);
+				for(int i=0; i<zerro_padding; i++){
+					tmp_x.add(0.0);
+				}
+			}
+			//System.out.println(name()+"decode--stride = "+stride+"  tmp_x.size = "+tmp_x.size());
+			
+			for(int i=0; i<tmp_x.size(); i+=stride){
+				double tmp =0;
+				for(int j=0; j<window.length; j++){
+					tmp += tmp_x.get(i+j)*window[j];
+				}
+				if(tmp>1) tmp/=10;
+				//System.out.println("element "+i+" of gen: "+tmp);
+				kp.add((int)Math.round(tmp));
+			}
+		}else{
+			for(int i=0;i<n;i++)
+				kp.add((int) Math.round(tmp_x.get(i)));
+		}
+		
+		//System.out.println(name()+"decode::gen size = "+kp.size());
+		//System.out.println(name()+"decode::gen kp=[");
+		
+//		for(int i=0; i<kp.size(); i++){
+//			System.out.print(kp.get(i)+", ");
+//		}
+//		System.out.println();
 		return kp;
 	}
 	
@@ -124,6 +181,11 @@ public class Knapsack {
 	public void setC(int[] c) {
 		this.c = c;
 	}
+	
+	public String name(){
+		return "Knapsack::";
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Knapsack kp= new Knapsack();
