@@ -14,7 +14,7 @@ public class Knapsack implements Task {
 	int w[],c[];
 	double cw[];
 	int vtcw[];
-	double window[] = {Math.random(),Math.random()};
+	double window[] = {Math.random(),Math.random(),Math.random(),Math.random()};
 	//System.out.println("Knapsack::decode"+"stride window=["+window[0]+", "+window[1]+"]");
 	int stride;
 	double window_max(){
@@ -77,8 +77,6 @@ public class Knapsack implements Task {
 	@Override
 	public Double getValue(ArrayList<Double> ind){
 		ArrayList<Integer> x=decode(ind);
-		System.out.println("knap ind get Value: "+ind);
-		System.out.println("knap get Value: "+x);
 		double res=0;
 		for(int i=0;i<x.size();i++)
 			res-=c[i]*x.get(i);
@@ -112,7 +110,7 @@ public class Knapsack implements Task {
 			if(x_decode.get(vtcw[i])==1){
 				wx=wx-w[vtcw[i]];
 				for(int k = 0; k<window.length; k++){
-					x.set(vtcw[i]+k, 0.5/(window.length*window_max()));
+					x.set(vtcw[i]*stride+k, 0.5/(window.length*window_max()));
 				}
 			}
 			i++;
