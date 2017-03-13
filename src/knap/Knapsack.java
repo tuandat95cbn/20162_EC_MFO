@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Knapsack {
+import main.Task;
+
+public class Knapsack implements Task {
 	int n,b;
 	int w[],c[];
 	double cw[];
@@ -72,25 +74,36 @@ public class Knapsack {
 		return kp;
 	}
 	//
-	public double getValue(ArrayList<Integer> x){
+	@Override
+	public Double getValue(ArrayList<Double> ind){
+		ArrayList<Integer> x=decode(ind);
+		System.out.println("knap ind get Value: "+ind);
+		System.out.println("knap get Value: "+x);
 		double res=0;
 		for(int i=0;i<x.size();i++)
 			res-=c[i]*x.get(i);
 		return res;
 	}
-	
-	public double getWeight(ArrayList<Integer> x){
+	@Override
+	public boolean checkIndivialVail(ArrayList<Double> ind){
+		ArrayList<Integer> x=decode(ind);
+		double res=0;
+		for(int i=0;i<x.size();i++)
+			res+=w[i]*x.get(i);
+		return res<b;
+	}
+	public Double getWeight(ArrayList<Double> ind){
+		ArrayList<Integer> x=decode(ind);
 		double res=0;
 		for(int i=0;i<x.size();i++)
 			res+=w[i]*x.get(i);
 		return res;
 	}
-	
 	public ArrayList<Double> makeIndivialVail(ArrayList<Double> x){
 //		System.out.println(name()+"makeIndivialVail--x.size="+x.size());
 //		System.out.println(name()+"makeIndivialVail--x="+x.toString());
 		ArrayList<Integer> x_decode = decode(x);
-		double wx=getWeight(x_decode);
+		Double wx=getWeight(x);
 //		System.out.println(name()+"makeIndivialVail--wx="+wx+"  b="+b);
 		int i=0;
 		Random r= new Random();
@@ -198,10 +211,15 @@ public class Knapsack {
 		ts.add(0.9341003134699865);
 		ts.add(0.9299141560686104);
 		System.out.println(kp.decode(ts));
-		System.out.println(kp.getValue(kp.decode(ts))+" "+kp.getWeight(kp.decode(ts)));
 		kp.makeIndivialVail(ts);
 		System.out.println(ts);
 		System.out.println(kp.decode(ts));
-		System.out.println(kp.getValue(kp.decode(ts))+" "+kp.getWeight(kp.decode(ts)));
 	}
+	@Override
+	public int getLenGen() {
+		// TODO Auto-generated method stub
+		return n;
+	}
+	
+	
 }

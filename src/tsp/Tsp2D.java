@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Tsp2D {
+import main.Task;
+
+public class Tsp2D implements Task{
 	int n;
 	double x[],y[];
 	void readData(String fileName){
@@ -127,7 +129,9 @@ public class Tsp2D {
 		return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
 	}
 	//
-	public double getDistance(ArrayList<Integer> xx){
+	@Override
+	public Double getValue(ArrayList<Double> ind){
+		ArrayList<Integer> xx=decode(ind);
 		//System.out.println("Distance x is"+x);
 		double c=0;
 		for(int i=0;i<xx.size()-1;i++){
@@ -197,7 +201,32 @@ public class Tsp2D {
 		}
 		
 		
-		System.out.println(tsp2D.getDistance(a));
+		//System.out.println(tsp2D.getValue(a));
 		//System.out.println(tsp.decode(tsp.encode(l)));
 	}
+
+
+	@Override
+	public ArrayList<Double> makeIndivialVail(ArrayList<Double> ind) {
+		// TODO Auto-generated method stub
+		return ind;
+	}
+
+
+	@Override
+	public boolean checkIndivialVail(ArrayList<Double> ind) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
+	@Override
+	public int getLenGen() {
+		// TODO Auto-generated method stub
+		return n;
+	}
+
+
+
+
 }

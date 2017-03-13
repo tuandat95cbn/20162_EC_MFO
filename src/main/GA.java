@@ -13,12 +13,21 @@ import tsp.Tsp2D;
 
 public class GA {
 	int nTask=2;
-	Tsp2D tsp= new Tsp2D();
-	Knapsack kp= new Knapsack();
-	Population p= new Population(10,nTask,tsp,kp);
+	
+	Population p;
+	int timeResetPopulation=0;
+	double pOfMutaion=0;
+	ArrayList<Task> tasks= new ArrayList<Task>();
 	public static final double LIMIT =10000000000.0;
 	
-	GA(){
+	GA(int numOfInd,double pOfMutaion,int timeResetPopulation){
+		Task tsp= new Tsp2D();
+		Task kp= new Knapsack();
+		tasks.add(tsp);
+		tasks.add(kp);
+		this.timeResetPopulation=timeResetPopulation;
+		this.pOfMutaion=pOfMutaion;
+		p= new Population(numOfInd,nTask,tasks);;
 		//System.out.println("rank in task:"+p.rankInTask);
 		//process(2, 3);
 	}
@@ -40,16 +49,19 @@ public class GA {
 				}
 				System.out.println("The best of task "+ii+" : "+ind.getFitnessTask());
 			}
-			System.out.println("Best gobal: "+bestSolution.get(0).getFitnessTask()+" "+bestSolution.get(1).getFitnessTask());
+			System.out.println("Best gobal: ");
+			for(int ii=0;ii<tasks.size();ii++)
+				System.out.println(bestSolution.get(ii).getFitnessTask());
+			System.out.println("********************");
 			changebest++;
-			if(changebest>=50){
+			if(changebest>=timeResetPopulation){
 				p.init();
 				changebest=0;
 				System.out.println("Change best:  ");
 			}
 			ArrayList<Individual> individuals = p.individuals;
 			ArrayList<Individual> childrens = new ArrayList<Individual>();;
-			for(int j=0;j<nN;j++){
+			for(int j=0;j<nN;j++){//
 				Individual a=individuals.get(r.nextInt(individuals.size()));
 				Individual b=individuals.get(r.nextInt(individuals.size()));
 				while(a==b) b=individuals.get(r.nextInt(individuals.size()));
@@ -58,7 +70,7 @@ public class GA {
 				double t= r.nextDouble();
 				
 				
-				if((ta==tb) || (t>0.1)){
+				if((ta==tb) || (t>pOfMutaion)){
 					childrens.addAll(crossOver(a, b));
 				} else {
 					Individual ia = mutation(a);
@@ -81,10 +93,10 @@ public class GA {
 	public void reComputeFitnessTaskForChild(ArrayList<Individual> chids){
 		for(int i=0;i<chids.size();i++){
 			ArrayList<Double> fT= chids.get(i).getFitnessTask();
-			if(fT.get(1)==LIMIT){
-				fT.set(1,kp.getValue(kp.decode(chids.get(i).gen)));
-			} else {
-				fT.set(0,tsp.getDistance(tsp.decode(chids.get(i).gen)));
+			for(int j=0;j<tasks.size();j++)
+				if(fT.get(j)==LIMIT){
+				Task t=tasks.get(j);
+				fT.set(j, t.getValue(chids.get(i).gen));
 			}
 		}
 	}
@@ -108,8 +120,8 @@ public class GA {
 			cb.add(a.getGen().get(i));
 		}
 		//make attribute for childrens
-		ArrayList<Integer> kpd=kp.decode(ca);
-		if(kp.getWeight(kpd)>kp.getB()) kp.makeIndivialVail(ca);
+		if(p.checkIndvidualVail(ca)) 
+			p.makeIndividualVail(ca);
 		Individual inda= new Individual(ca, null);
 		//algorithms 3
 		double rand = Math.random();
@@ -119,18 +131,17 @@ public class GA {
 			inda.setSkillFactor(b.getSkillFactor());
 		}
 		ArrayList<Double> fitnessTa= new ArrayList<Double>();
-		if(inda.getSkillFactor()==0) {
-			fitnessTa.add(tsp.getDistance(tsp.decode(ca)));
-			fitnessTa.add(LIMIT);
-		} else {
-			fitnessTa.add(LIMIT);
-			fitnessTa.add(kp.getValue(kp.decode(ca)));
-		}
+		for(int i=0;i<tasks.size();i++)
+			if(i!=inda.getSkillFactor())
+				fitnessTa.add(LIMIT);
+			else
+				fitnessTa.add(tasks.get(i).getValue(ca));
+		
 		inda.setFitnessTask(fitnessTa);
 		inda.setFactorial_rank(fR);
 		childrens.add(inda);
-		kpd=kp.decode(cb);
-		if(kp.getWeight(kpd)>kp.getB()) kp.makeIndivialVail(cb);
+		if(p.checkIndvidualVail(cb)) 
+			p.makeIndividualVail(cb);
 		
 		Individual indb= new Individual(cb, null);
 		
@@ -141,13 +152,12 @@ public class GA {
 			indb.setSkillFactor(b.getSkillFactor());
 		}
 		fitnessTa= new ArrayList<Double>();
-		if(indb.getSkillFactor()==0) {
-			fitnessTa.add(tsp.getDistance(tsp.decode(cb)));
-			fitnessTa.add(LIMIT);
-		} else {
-			fitnessTa.add(LIMIT);
-			fitnessTa.add(kp.getValue(kp.decode(cb)));
-		}
+		for(int i=0;i<tasks.size();i++)
+			if(i!=indb.getSkillFactor())
+				fitnessTa.add(LIMIT);
+			else
+				fitnessTa.add(tasks.get(i).getValue(cb));
+		
 		indb.setFitnessTask(fitnessTa);
 		indb.setFactorial_rank(fR);
 		childrens.add(indb);
@@ -162,18 +172,16 @@ public class GA {
 		ArrayList<Double> c= new ArrayList<Double>();
 		for(int i=0;i<a.getGen().size();i++) c.add(a.getGen().get(i));
 		c.set(t, r.nextDouble());
-		ArrayList<Integer> kpd=kp.decode(c);
-		if(kp.getWeight(kpd)>kp.getB()) kp.makeIndivialVail(c);
+		if(p.checkIndvidualVail(c)) 
+			p.makeIndividualVail(c);
 		Individual ind= new Individual(c, null);
 		ind.setSkillFactor(a.getSkillFactor());
 		ArrayList<Double> fitnessTa= new ArrayList<Double>();
-		if(ind.getSkillFactor()==0) {
-			fitnessTa.add(tsp.getDistance(tsp.decode(c)));
-			fitnessTa.add(LIMIT);
-		} else {
-			fitnessTa.add(LIMIT);
-			fitnessTa.add(kp.getValue(kp.decode(c)));
-		}
+		for(int i=0;i<tasks.size();i++)
+			if(i!=ind.getSkillFactor())
+				fitnessTa.add(LIMIT);
+			else
+				fitnessTa.add(tasks.get(i).getValue(c));
 		ind.setFitnessTask(fitnessTa);
 		ind.setFactorial_rank(fR);
 		

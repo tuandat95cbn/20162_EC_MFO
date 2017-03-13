@@ -13,15 +13,18 @@ public class Population {
 	int lenGen; //length of gen per individual
 	ArrayList<Individual> individuals= null;
 	//ArrayList<ArrayList<Double>> bestFitnessInTask = new ArrayList<ArrayList<Double>>();
-	Tsp2D tsp;
-	Knapsack kp; 
-	public Population(int n, int nTask,Tsp2D tsp,Knapsack kp) {
+	
+	ArrayList<Task> tasks;
+	public Population(int n, int nTask,ArrayList<Task> tasks) {
 		this.nIndividual = n;
 		this.nTask = nTask;
-		this.tsp=tsp;
-		this.kp=kp;
-		if(tsp.getN()>kp.getN()) lenGen=tsp.getN();
-		else lenGen=kp.getN();
+		this.tasks=tasks;
+		// here
+		int max=0;
+		for(int i=0;i<tasks.size();i++){
+			if(tasks.get(i).getLenGen()>max) max=tasks.get(i).getLenGen();
+		}
+		lenGen=max;
 	}
 	
 	//Step 1-2 in algo
@@ -35,11 +38,13 @@ public class Population {
 			for(int j=0;j<lenGen;j++){
 				g.add(r.nextDouble());
 			}
-			ArrayList<Integer> kpd=kp.decode(g);
-			if(kp.getWeight(kpd)>kp.getB()) kp.makeIndivialVail(g);
+			if(checkIndvidualVail(g)) makeIndividualVail(g);
+			
 			ArrayList<Double> fitnessTa= new ArrayList<Double>();
-			fitnessTa.add(tsp.getDistance(tsp.decode(g)));
-			fitnessTa.add(kp.getValue(kp.decode(g)));
+			for(int j=0;j<tasks.size();j++){
+				fitnessTa.add(tasks.get(j).getValue(g));
+			}
+			
 			Individual ind= new Individual(g,fitnessTa);
 			individuals.add(ind);
 			
@@ -47,8 +52,29 @@ public class Population {
 		updateRankPopulation();
 		
 	}
-	
-	
+	public boolean checkIndvidualVail(ArrayList<Double> ind){
+		for(int i=0;i<tasks.size();i++){
+			Task t=tasks.get(i);
+			if(!t.checkIndivialVail(ind)) return false;
+		}
+		return true;
+	}
+	public void makeIndividualVail(ArrayList<Double> ind){
+		int i=0;
+		int xd=0;
+		while(true){
+			Task t= tasks.get(i);
+			if(!t.checkIndivialVail(ind)){
+				xd=0;
+				t.makeIndivialVail(ind);
+			} else {
+				xd++;
+			}
+			if(xd>=tasks.size()){
+				break;
+			}
+		}
+	}
 	public void updateRankPopulation(){
 		ArrayList<ArrayList<Individual>> rankInTask = new ArrayList<ArrayList<Individual>>();
 		for(int i=0; i<nTask; i++){
