@@ -32,13 +32,13 @@ public class Population {
 		Random r= new Random();
 		individuals= new ArrayList<Individual>();
 		//init random individuals
-		System.out.println("Population::init--length of gen = "+lenGen);
+		//System.out.println("Population::init--length of gen = "+lenGen);
 		for(int i=0;i<nIndividual;i++){
 			ArrayList<Double> g= new ArrayList<Double>();
 			for(int j=0;j<lenGen;j++){
 				g.add(r.nextDouble());
 			}
-			if(checkIndvidualVail(g)) makeIndividualVail(g);
+			if(!checkIndvidualVail(g)) makeIndividualVail(g);
 			
 			ArrayList<Double> fitnessTa= new ArrayList<Double>();
 			for(int j=0;j<tasks.size();j++){
@@ -55,16 +55,22 @@ public class Population {
 	public boolean checkIndvidualVail(ArrayList<Double> ind){
 		for(int i=0;i<tasks.size();i++){
 			Task t=tasks.get(i);
-			if(!t.checkIndivialVail(ind)) return false;
+			if(!t.checkIndivialVail(ind)) {
+				//System.out.println("Population::CheckIndvidualVail--- false");
+				return false;
+			}
 		}
+		//System.out.println("Population::CheckIndvidualVail--- true");
 		return true;
 	}
 	public void makeIndividualVail(ArrayList<Double> ind){
+		//System.out.println("Population::makeIndividual");
 		int i=0;
 		int xd=0;
 		while(true){
 			Task t= tasks.get(i);
 			if(!t.checkIndivialVail(ind)){
+				//System.out.println("task["+i+"]: false ==> make available");
 				xd=0;
 				t.makeIndivialVail(ind);
 			} else {
@@ -73,6 +79,7 @@ public class Population {
 			if(xd>=tasks.size()){
 				break;
 			}
+			i=(i+1)%tasks.size();
 		}
 	}
 	public void updateRankPopulation(){

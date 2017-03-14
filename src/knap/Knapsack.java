@@ -88,7 +88,9 @@ public class Knapsack implements Task {
 		double res=0;
 		for(int i=0;i<x.size();i++)
 			res+=w[i]*x.get(i);
-		return res<b;
+		boolean re_v = res<=b;
+		//System.out.println("Knapsack check: "+re_v);
+		return re_v;
 	}
 	public Double getWeight(ArrayList<Double> ind){
 		ArrayList<Integer> x=decode(ind);
@@ -99,7 +101,7 @@ public class Knapsack implements Task {
 	}
 	public ArrayList<Double> makeIndivialVail(ArrayList<Double> x){
 //		System.out.println(name()+"makeIndivialVail--x.size="+x.size());
-//		System.out.println(name()+"makeIndivialVail--x="+x.toString());
+//		System.out.println(name()+"makeIndivialVail--input x="+x.toString());
 		ArrayList<Integer> x_decode = decode(x);
 		Double wx=getWeight(x);
 //		System.out.println(name()+"makeIndivialVail--wx="+wx+"  b="+b);
@@ -115,6 +117,7 @@ public class Knapsack implements Task {
 			}
 			i++;
 		}
+//		System.out.println(name()+"makeIndivialVail-- return x="+x.toString());
 		return x;
 	}
 	public ArrayList<Integer> decode(ArrayList<Double> x){

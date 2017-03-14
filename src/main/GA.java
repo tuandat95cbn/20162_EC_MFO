@@ -120,7 +120,7 @@ public class GA {
 			cb.add(a.getGen().get(i));
 		}
 		//make attribute for childrens
-		if(p.checkIndvidualVail(ca)) 
+		if(!p.checkIndvidualVail(ca)) 
 			p.makeIndividualVail(ca);
 		Individual inda= new Individual(ca, null);
 		//algorithms 3
@@ -140,7 +140,7 @@ public class GA {
 		inda.setFitnessTask(fitnessTa);
 		inda.setFactorial_rank(fR);
 		childrens.add(inda);
-		if(p.checkIndvidualVail(cb)) 
+		if(!p.checkIndvidualVail(cb)) 
 			p.makeIndividualVail(cb);
 		
 		Individual indb= new Individual(cb, null);
@@ -172,7 +172,7 @@ public class GA {
 		ArrayList<Double> c= new ArrayList<Double>();
 		for(int i=0;i<a.getGen().size();i++) c.add(a.getGen().get(i));
 		c.set(t, r.nextDouble());
-		if(p.checkIndvidualVail(c)) 
+		if(!p.checkIndvidualVail(c)) 
 			p.makeIndividualVail(c);
 		Individual ind= new Individual(c, null);
 		ind.setSkillFactor(a.getSkillFactor());
