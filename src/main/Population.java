@@ -11,6 +11,7 @@ public class Population {
 	int nIndividual; //number of individual
 	int nTask; //number of task
 	int lenGen; //length of gen per individual
+	int minLenGen;
 	ArrayList<Individual> individuals= null;
 	//ArrayList<ArrayList<Double>> bestFitnessInTask = new ArrayList<ArrayList<Double>>();
 	
@@ -21,10 +22,13 @@ public class Population {
 		this.tasks=tasks;
 		// here
 		int max=0;
+		int min=Integer.MAX_VALUE;
 		for(int i=0;i<tasks.size();i++){
 			if(tasks.get(i).getLenGen()>max) max=tasks.get(i).getLenGen();
+			if(tasks.get(i).getLenGen()<min) min=tasks.get(i).getLenGen();
 		}
 		lenGen=max;
+		minLenGen=min;
 	}
 	
 	//Step 1-2 in algo

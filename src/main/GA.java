@@ -1,5 +1,8 @@
 package main;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,9 +10,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
+import knap.KnapNotCovl;
 import knap.Knapsack;
 import tsp.Tsp;
 import tsp.Tsp2D;
+import tsp.Tsp2DNotCovl;
 
 public class GA {
 	int nTask=2;
@@ -21,10 +26,12 @@ public class GA {
 	public static final double LIMIT =10000000000.0;
 	
 	GA(int numOfInd,double pOfMutaion,int timeResetPopulation){
-		Task tsp= new Tsp2D();
-		Task kp= new Knapsack();
+		Task tsp= new Tsp2DNotCovl();
+		Task tsp2= new Tsp2D();
+		Task kp= new KnapNotCovl();
 		tasks.add(tsp);
 		tasks.add(kp);
+	
 		this.timeResetPopulation=timeResetPopulation;
 		this.pOfMutaion=pOfMutaion;
 		p= new Population(numOfInd,nTask,tasks);;
@@ -32,6 +39,10 @@ public class GA {
 		//process(2, 3);
 	}
 	void process(int inter,int nN){
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream("sol-notcovl.txt",false);
+        PrintWriter pw= new PrintWriter(fos);
 		ArrayList<Individual> bestSolution= new ArrayList<Individual>();
 		Random r= new Random();
 		p.init();
@@ -39,7 +50,7 @@ public class GA {
 			bestSolution.add(p.individuals.get(i));
 		int changebest=0;
 		for(int i=0;i<inter;i++){
-			System.out.println("it "+i);
+			pw.println("it "+i);
 			
 			for(int ii=0;ii<nTask;ii++){
 				Individual ind=p.getIndividualBestOfTask(ii);
@@ -47,17 +58,17 @@ public class GA {
 					changebest=0;
 					bestSolution.set(ii, ind);
 				}
-				System.out.println("The best of task "+ii+" : "+ind.getFitnessTask());
+				pw.println("The best of task "+ii+" : "+ind.getFitnessTask());
 			}
-			System.out.println("Best gobal: ");
+			/*System.out.println("Best gobal: ");
 			for(int ii=0;ii<tasks.size();ii++)
 				System.out.println(bestSolution.get(ii).getFitnessTask());
-			System.out.println("********************");
+			System.out.println("********************");*/
 			changebest++;
 			if(changebest>=timeResetPopulation){
 				p.init();
 				changebest=0;
-				System.out.println("Change best:  ");
+				pw.println("Change best:  ");
 			}
 			ArrayList<Individual> individuals = p.individuals;
 			ArrayList<Individual> childrens = new ArrayList<Individual>();;
@@ -85,9 +96,14 @@ public class GA {
 			p.updateRankPopulation();
 			
 		}
-		System.out.println("THE FINAL SOLUTION IN "+ inter+ " LOOP");
+		pw.println("THE FINAL SOLUTION IN "+ inter+ " LOOP");
 		for(int i=0;i<bestSolution.size();i++){
-			System.out.println(bestSolution.get(i));
+			pw.println(bestSolution.get(i));
+		}
+		pw.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	public void reComputeFitnessTaskForChild(ArrayList<Individual> chids){
@@ -109,6 +125,7 @@ public class GA {
 		
 		//generate gen for childrens
 		int t=r.nextInt(a.getGen().size()-1);
+		//int t=r.nextInt(p.minLenGen-1);
 		ArrayList<Double> cb= new ArrayList<Double>();
 		ArrayList<Double> ca= new ArrayList<Double>();
 		for(int i=0;i<t;i++){
