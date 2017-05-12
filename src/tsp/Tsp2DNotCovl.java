@@ -110,9 +110,13 @@ public class Tsp2DNotCovl implements Task {
 		return c;
 	}
 	
-	public Tsp2DNotCovl() {
+	public Tsp2DNotCovl(){
 		super();
-		readData("tsp52.txt");
+	}
+	
+	public Tsp2DNotCovl(String fileInput) {
+		super();
+		readData(fileInput);
 	}
 
 	

@@ -26,12 +26,12 @@ public class GA {
 	public static final double LIMIT =10000000000.0;
 	
 	GA(int numOfInd,double pOfMutaion,int timeResetPopulation){
-		Task tsp= new Tsp2DNotCovl();
-		Task tsp2= new Tsp2D();
-		Task kp= new KnapNotCovl();
+		Task tsp= new Tsp2DNotCovl("test200_31741.txt");
+		Task tsp2= new Tsp2DNotCovl("tsp20.txt");
+		//Task kp= new KnapNotCovl();
 		tasks.add(tsp);
-		tasks.add(kp);
-	
+		//tasks.add(kp);
+		tasks.add(tsp2);
 		this.timeResetPopulation=timeResetPopulation;
 		this.pOfMutaion=pOfMutaion;
 		p= new Population(numOfInd,nTask,tasks);;

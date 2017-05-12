@@ -14,7 +14,7 @@ public class KnapNotCovl implements Task {
 	int w[],c[];
 	double cw[];
 	int vtcw[];
-	void sort(double a[],int na,int vt[]){
+	void sort(double a[],int na, int vt[]){
 		for(int i=0;i<na;i++) vt[i]=i;
 		for(int i=0;i<na-1;i++)
 			for(int j=i+1;j<na;j++)
