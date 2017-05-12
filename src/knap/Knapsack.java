@@ -167,7 +167,7 @@ public class Knapsack implements Task {
 	
 	public Knapsack() {
 		super();
-		readData("kp15.txt");
+		readData("test200_31741.txt");
 		sort(cw, n, vtcw);
 	}
 	

@@ -36,14 +36,16 @@ public class Population {
 		Random r= new Random();
 		individuals= new ArrayList<Individual>();
 		//init random individuals
-		//System.out.println("Population::init--length of gen = "+lenGen);
+		System.out.println("Population::init--length of gen = "+lenGen);
 		for(int i=0;i<nIndividual;i++){
+			System.out.println(i+" loop");
 			ArrayList<Double> g= new ArrayList<Double>();
 			for(int j=0;j<lenGen;j++){
 				g.add(r.nextDouble());
 			}
+			System.out.println(i+" loop1");
 			if(!checkIndvidualVail(g)) makeIndividualVail(g);
-			
+			System.out.println(i+" loop2");
 			ArrayList<Double> fitnessTa= new ArrayList<Double>();
 			for(int j=0;j<tasks.size();j++){
 				fitnessTa.add(tasks.get(j).getValue(g));
@@ -53,6 +55,7 @@ public class Population {
 			individuals.add(ind);
 			
 		}
+		System.out.println("end loop");
 		updateRankPopulation();
 		
 	}
@@ -71,12 +74,14 @@ public class Population {
 		//System.out.println("Population::makeIndividual");
 		int i=0;
 		int xd=0;
+		System.out.println("while "+tasks.size());
 		while(true){
 			Task t= tasks.get(i);
 			if(!t.checkIndivialVail(ind)){
 				//System.out.println("task["+i+"]: false ==> make available");
 				xd=0;
 				t.makeIndivialVail(ind);
+				//System.out.println("make done");
 			} else {
 				xd++;
 			}
@@ -85,6 +90,7 @@ public class Population {
 			}
 			i=(i+1)%tasks.size();
 		}
+		System.out.println("while 2");
 	}
 	public void updateRankPopulation(){
 		ArrayList<ArrayList<Individual>> rankInTask = new ArrayList<ArrayList<Individual>>();

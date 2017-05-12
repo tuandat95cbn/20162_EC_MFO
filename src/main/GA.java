@@ -26,10 +26,9 @@ public class GA {
 	public static final double LIMIT =10000000000.0;
 	
 	GA(int numOfInd,double pOfMutaion,int timeResetPopulation){
-		Task tsp= new Tsp2DNotCovl();
 		Task tsp2= new Tsp2D();
 		Task kp= new KnapNotCovl();
-		tasks.add(tsp);
+		tasks.add(tsp2);
 		tasks.add(kp);
 	
 		this.timeResetPopulation=timeResetPopulation;
@@ -45,13 +44,15 @@ public class GA {
         PrintWriter pw= new PrintWriter(fos);
 		ArrayList<Individual> bestSolution= new ArrayList<Individual>();
 		Random r= new Random();
+		System.out.println("start init");
 		p.init();
+		System.out.println("done init");
 		for(int i=0;i<nTask;i++)
 			bestSolution.add(p.individuals.get(i));
 		int changebest=0;
 		for(int i=0;i<inter;i++){
 			pw.println("it "+i);
-			
+			System.out.println("step"+i);
 			for(int ii=0;ii<nTask;ii++){
 				Individual ind=p.getIndividualBestOfTask(ii);
 				if(bestSolution.get(ii).fitnessTask.get(ii)>ind.getFitnessTask().get(ii)) {
@@ -99,6 +100,10 @@ public class GA {
 		pw.println("THE FINAL SOLUTION IN "+ inter+ " LOOP");
 		for(int i=0;i<bestSolution.size();i++){
 			pw.println(bestSolution.get(i));
+		}
+		System.out.println("THE FINAL SOLUTION IN "+ inter+ " LOOP");
+		for(int i=0;i<bestSolution.size();i++){
+			System.out.println(bestSolution.get(i).getFitnessTask());
 		}
 		pw.close();
 		} catch (FileNotFoundException e) {

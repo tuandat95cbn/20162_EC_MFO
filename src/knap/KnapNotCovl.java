@@ -109,7 +109,7 @@ public class KnapNotCovl implements Task {
 	
 	public KnapNotCovl() {
 		super();
-		readData("kp15.txt");
+		readData("test20000_517659.txt");
 		sort(cw, n, vtcw);
 	}
 	
