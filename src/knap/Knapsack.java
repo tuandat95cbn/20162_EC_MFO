@@ -15,7 +15,7 @@ public class Knapsack implements Task {
 	double cw[];
 	int vtcw[];
 	double window[] = {Math.random(),Math.random(),Math.random(),Math.random()};
-	//System.out.println("Knapsack::decode"+"stride window=["+window[0]+", "+window[1]+"]");
+	////System.out.println("Knapsack::decode"+"stride window=["+window[0]+", "+window[1]+"]");
 	int stride;
 	double window_max(){
 		double max = -1;
@@ -58,9 +58,9 @@ public class Knapsack implements Task {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//System.out.println(n+" "+b);
+		////System.out.println(n+" "+b);
 		//for(int i=0;i<n;i++)
-			//System.out.println(w[i]+" "+c[i]);
+			////System.out.println(w[i]+" "+c[i]);
 	}
 	
 	ArrayList<Double> encode(ArrayList<Integer> x){
@@ -85,11 +85,12 @@ public class Knapsack implements Task {
 	@Override
 	public boolean checkIndivialVail(ArrayList<Double> ind){
 		ArrayList<Integer> x=decode(ind);
+		////System.out.println("checkIndivialVail::input"+ind.toString()+"   decode = "+x.toString());
 		double res=0;
 		for(int i=0;i<x.size();i++)
 			res+=w[i]*x.get(i);
 		boolean re_v = res<=b;
-		//System.out.println("Knapsack check: "+re_v);
+		////System.out.println("Knapsack check: "+re_v);
 		return re_v;
 	}
 	public Double getWeight(ArrayList<Double> ind){
@@ -100,24 +101,45 @@ public class Knapsack implements Task {
 		return res;
 	}
 	public ArrayList<Double> makeIndivialVail(ArrayList<Double> x){
-//		System.out.println(name()+"makeIndivialVail--x.size="+x.size());
-//		System.out.println(name()+"makeIndivialVail--input x="+x.toString());
+//		//System.out.println(name()+"makeIndivialVail--x.size="+x.size());
+		////System.out.println(name()+"makeIndivialVail--input x="+x.toString());
 		ArrayList<Integer> x_decode = decode(x);
+		////System.out.println(name()+"makeIndivialVail--input x_decode="+x_decode.toString());
 		Double wx=getWeight(x);
-//		System.out.println(name()+"makeIndivialVail--wx="+wx+"  b="+b);
+//		//System.out.println(name()+"makeIndivialVail--wx="+wx+"  b="+b);
 		int i=0;
 		Random r= new Random();
-		while(wx>b){
-//			System.out.println(name()+"makeIndivialVail--vtcw["+i+"]="+vtcw[i] + "  wx="+wx);
-			if(x_decode.get(vtcw[i])==1){
-				wx=wx-w[vtcw[i]];
-				for(int k = 0; k<window.length; k++){
-					x.set(vtcw[i]*stride+k, 0.5/(window.length*window_max()));
+		if(x.size() > n){
+			while(wx>b){
+				////System.out.println("stride = "+stride);
+				////System.out.println(name()+"makeIndivialVail--vtcw["+i+"]="+vtcw[i] + "  wx="+wx);
+				if(x_decode.get(vtcw[i])==1){
+					wx=wx-w[vtcw[i]];
+					for(int k = 0; k<window.length; k++){
+						////System.out.println("x["+(vtcw[i]*stride+k)+"] before set = "+x.get(vtcw[i]*stride+k));
+						x.set(vtcw[i]*stride+k, 0.5/(window.length*window_max()));
+						////System.out.println("x["+(vtcw[i]*stride+k)+"] after set = "+x.get(vtcw[i]*stride+k));
+					}
 				}
+				i++;
 			}
-			i++;
+		}else{
+			while(wx>b){
+				////System.out.println("stride = "+stride);
+				////System.out.println(name()+"makeIndivialVail--vtcw["+i+"]="+vtcw[i] + "  wx="+wx);
+				if(x_decode.get(vtcw[i])==1){
+					wx=wx-w[vtcw[i]];
+					//for(int k = 0; k<window.length; k++){
+						////System.out.println("x["+(vtcw[i]*stride+k)+"] before set = "+x.get(vtcw[i]*stride+k));
+					x.set(vtcw[i],x.get(vtcw[i])-0.5);
+						////System.out.println("x["+(vtcw[i]*stride+k)+"] after set = "+x.get(vtcw[i]*stride+k));
+					//}
+				}
+				i++;
+			}
 		}
-//		System.out.println(name()+"makeIndivialVail-- return x="+x.toString());
+		
+		////System.out.println(name()+"makeIndivialVail-- return x="+x.toString());
 		return x;
 	}
 	public ArrayList<Integer> decode(ArrayList<Double> x){
@@ -128,18 +150,19 @@ public class Knapsack implements Task {
 		}
 		
 		ArrayList<Integer> kp= new ArrayList<Integer>();
+		////System.out.println("decode:: tmp_x.size() = "+tmp_x.size()+"  n = "+n);
 		if(tmp_x.size()>n){
 			if((tmp_x.size()- window.length)%(n-1)==0){
 				stride = (tmp_x.size()- window.length)/(n-1);
 			}else{
 				stride = (tmp_x.size()- window.length)/(n-1) +1;
 				int zerro_padding = (n-1)*stride + window.length - x.size();
-				//System.out.println(name()+"decode--zerro_padding = "+zerro_padding);
+				////System.out.println(name()+"decode--zerro_padding = "+zerro_padding);
 				for(int i=0; i<zerro_padding; i++){
 					tmp_x.add(0.0);
 				}
 			}
-			//System.out.println(name()+"decode--stride = "+stride+"  tmp_x.size = "+tmp_x.size());
+			////System.out.println(name()+"decode--stride = "+stride+"  tmp_x.size = "+tmp_x.size());
 			
 			for(int i=0; i<tmp_x.size(); i+=stride){
 				double tmp =0;
@@ -147,21 +170,21 @@ public class Knapsack implements Task {
 					tmp += tmp_x.get(i+j)*window[j];
 				}
 				if(tmp>1) tmp/=10;
-				//System.out.println("element "+i+" of gen: "+tmp);
+				////System.out.println("element "+i+" of gen: "+tmp);
 				kp.add((int)Math.round(tmp));
 			}
 		}else{
 			for(int i=0;i<n;i++)
 				kp.add((int) Math.round(tmp_x.get(i)));
 		}
-		
-		//System.out.println(name()+"decode::gen size = "+kp.size());
-		//System.out.println(name()+"decode::gen kp=[");
+		////System.out.println("decode stride = "+stride);
+		////System.out.println(name()+"decode::gen size = "+kp.size());
+		////System.out.println(name()+"decode::gen kp=[");
 		
 //		for(int i=0; i<kp.size(); i++){
-//			System.out.print(kp.get(i)+", ");
+//			//System.out.print(kp.get(i)+", ");
 //		}
-//		System.out.println();
+//		//System.out.println();
 		return kp;
 	}
 	
@@ -211,10 +234,10 @@ public class Knapsack implements Task {
 		ts.add(0.6159508458051836);
 		ts.add(0.9341003134699865);
 		ts.add(0.9299141560686104);
-		System.out.println(kp.decode(ts));
+		//System.out.println(kp.decode(ts));
 		kp.makeIndivialVail(ts);
-		System.out.println(ts);
-		System.out.println(kp.decode(ts));
+		//System.out.println(ts);
+		//System.out.println(kp.decode(ts));
 	}
 	@Override
 	public int getLenGen() {
